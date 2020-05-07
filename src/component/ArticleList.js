@@ -2,22 +2,16 @@ import {List, Typography} from "antd";
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import {list} from "../action/articleAction";
-import moment from "moment";
+import {formatTime} from "../util/dateHelper";
 
-
-class ArticleListPage extends Component {
+class ArticleList extends Component {
     componentDidMount() {
         this.props.dispatch(list());
-    }
-
-    formatTime(time) {
-        return moment(time).format('YYYY-MM-DD hh-mm-ss');
     }
 
     render() {
         const {articles} = this.props;
 
-        console.log(`articles=` + articles);
         return (
             <List
                 itemLayout="vertical"
@@ -33,9 +27,9 @@ class ArticleListPage extends Component {
                                     <Typography.Title level={3}>
                                         {item.title}
                                     </Typography.Title>}
-                                description={this.formatTime(item.createdAt)}/>
+                                description={formatTime(item.createdAt)}/>
                             <Typography.Paragraph
-                                style={{fontSize: 16}}
+                                style={{fontSize: 15}}
                                 ellipsis={{rows: 2}}>
                                 {item.content}
                             </Typography.Paragraph>
@@ -52,4 +46,4 @@ const mapStateToProps = state => ({
     error: state.articleListReducer.error
 });
 
-export default connect(mapStateToProps)(ArticleListPage);
+export default connect(mapStateToProps)(ArticleList);

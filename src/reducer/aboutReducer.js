@@ -1,31 +1,31 @@
-import {FETCH_LIST_BEGIN, FETCH_LIST_SUCCESS, FETCH_LIST_FAILURE} from "../action/articleAction";
+import {FETCH_ABOUT_BEGIN, FETCH_ABOUT_SUCCESS, FETCH_ABOUT_FAILURE} from '../action/aboutAction';
 
 const initialState = {
-    articles: [],
+    abouts: [],
     loading: false,
     error: null
 };
 
-export default function articleListReducer(state = initialState, action) {
+export default function aboutReducer(state = initialState, action) {
     switch (action.type) {
-        case FETCH_LIST_BEGIN:
+        case FETCH_ABOUT_BEGIN:
             return {
                 ...state,
-                articles: [],
+                abouts: [],
                 loading: true,
                 error: null,
             };
-        case FETCH_LIST_SUCCESS:
+        case FETCH_ABOUT_SUCCESS:
             return {
                 ...state,
-                articles: action.payload.articles,
+                abouts: action.payload.abouts,
                 loading: false,
                 error: null,
             };
-        case FETCH_LIST_FAILURE:
+        case FETCH_ABOUT_FAILURE:
             return {
                 ...state,
-                articles: [],
+                abouts: [],
                 loading: false,
                 error: action.payload.error,
             };

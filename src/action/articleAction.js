@@ -1,19 +1,19 @@
 import {articleList} from '../network/Api';
 
-export const FETCH_LIST_BEGIN = 'FETCH_PRODUCTS_BEGIN';
-export const FETCH_LIST_SUCCESS = 'FETCH_PRODUCTS_SUCCESS';
-export const FETCH_LIST_FAILURE = 'FETCH_PRODUCTS_FAILURE';
+export const FETCH_LIST_BEGIN = 'FETCH_LIST_BEGIN';
+export const FETCH_LIST_SUCCESS = 'FETCH_LIST_SUCCESS';
+export const FETCH_LIST_FAILURE = 'FETCH_LIST_FAILURE';
 
-export const fetchProductsBegin = () => ({
+ const fetchListBegin = () => ({
     type: FETCH_LIST_BEGIN
 });
 
-export const fetchProductsSuccess = articles => ({
+ const fetchListSuccess = articles => ({
     type: FETCH_LIST_SUCCESS,
     payload: {articles}
 });
 
-export const fetchProductsFailure = error => ({
+ const fetchListFailure = error => ({
     type: FETCH_LIST_FAILURE,
     payload: {error}
 });
@@ -28,17 +28,16 @@ function handleErrors(response) {
 
 export function list() {
     return dispatch => {
-        dispatch(fetchProductsBegin());
+        dispatch(fetchListBegin());
         return fetch(articleList, {
             method: 'GET',
         })
             .then(handleErrors)
             .then(res => res.json())
             .then(json => {
-                console.log(`json=` + json['d']['entrylist']);
-                dispatch(fetchProductsSuccess(json['d']['entrylist']));
+                dispatch(fetchListSuccess(json['d']['entrylist']));
                 return json['d']['entrylist'];
             })
-            .catch(error => dispatch(fetchProductsFailure(error)))
+            .catch(error => dispatch(fetchListFailure(error)))
     };
 }
