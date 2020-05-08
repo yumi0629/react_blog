@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {Layout, Menu, Row, Col} from "antd";
 import '../styles/ant-theme.less';
 import RightPage from "./RightPage";
-import ArticleListPage from "./ArticleList";
+import ArticleList from "./ArticleList";
 import AboutMe from "./AboutMe";
 import {BrowserRouter as Router, Route, Switch, Redirect, Link} from "react-router-dom";
 import {articleList, initialRoute, aboutMe} from '../route/routeName';
@@ -29,10 +29,7 @@ function TabMenu() {
             theme="light"
             mode="horizontal"
             defaultSelectedKeys={['0']}
-            style={{fontSize: '150%'}}
-            onClick={(param) => {
-
-            }}>
+            style={{fontSize: '150%'}}>
             {tabs.map((tab) => {
                 return <Menu.Item
                     key={tab.route}
@@ -65,13 +62,13 @@ class Home extends Component {
                     <Layout>
                         <Content style={{margin: 30, height: '100%'}}>
 
-                            <Route path={articleList} component={ArticleListPage}/>
+                            <Route path={articleList} component={ArticleList}/>
                             <Route path={aboutMe} component={AboutMe}/>
                             <Switch>
                                 <Redirect from={initialRoute} to={articleList}/>
                             </Switch>
                         </Content>
-                        <Sider width={440} style={{backgroundColor: '#ffffff',padding:20}}>
+                        <Sider width={440} >
                             <RightPage/>
                         </Sider>
                     </Layout>

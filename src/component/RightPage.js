@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {Layout, Col, Row, Typography} from "antd";
+import GithubEvent from './GithubEvent';
 import '../styles/right-page.less'
 
 function Introduction() {
@@ -38,6 +39,7 @@ class RightPage extends Component {
         return (
             <Layout>
                 <Introduction/>
+                <GithubEvent/>
             </Layout>
         );
     }

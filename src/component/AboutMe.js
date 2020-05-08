@@ -3,6 +3,7 @@ import {Row, Typography, Layout} from "antd";
 import {CrownFilled} from "@ant-design/icons";
 import {connect} from "react-redux";
 import {getAbout} from "../action/aboutAction";
+import {HttpContainer} from '../util/widgets'
 
 class AboutMe extends Component {
     componentDidMount() {
@@ -10,14 +11,12 @@ class AboutMe extends Component {
     }
 
     render() {
-        const {abouts} = this.props;
+        const {abouts, loading, error} = this.props;
         let components = [];
-        const block40 = <div style={{height: 40}}/>;
-        const block20 = <div style={{height: 20}}/>;
         abouts.forEach(
-            item => {
+            (item, index) => {
                 components.push(
-                    <Row align="middle">
+                    <Row align="middle" key={"0" + index}>
                         <CrownFilled style={{color: '#ff4081'}}/>
                         <div style={{width: 20}}/>
                         <Typography.Text
@@ -26,30 +25,34 @@ class AboutMe extends Component {
                         </Typography.Text>
                     </Row>
                 );
-                components.push(block20);
+                components.push(<div key={"1" + index} style={{height: 20}}/>);
                 components.push(
                     <Typography.Paragraph
+                        key={"2" + index}
                         style={{fontSize: 15}}>
                         {item.content}
                     </Typography.Paragraph>
                 );
-                components.push(block40);
+                components.push(<div key={"3" + index} style={{height: 40}}/>);
                 if (item.image != null) {
                     let images = [];
-                    item.image.forEach(image => {
+                    item.image.forEach((image, i) => {
                         images.push(
                             <img
-                                src={image} alt="" width='20%' height='20%'/>
+                                key={index + '1' + i} src={image} alt="" width='20%' height='20%'/>
                         );
-                        images.push(<div style={{width: 30}}/>);
+                        images.push(<div key={index + '2' + i} style={{width: 30}}/>);
                     });
-                    components.push(<Row>{images}</Row>);
+                    components.push(<Row key={"4" + index}>{images}</Row>);
                 }
             }
         );
         return (
             <Layout style={{padding: 30, backgroundColor: "white", borderRadius: 8}}>
-                {components}
+                <HttpContainer
+                    isLoading={loading}
+                    hasError={error != null}
+                    component={components}/>
             </Layout>
         );
     }

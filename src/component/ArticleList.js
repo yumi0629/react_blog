@@ -24,9 +24,10 @@ class ArticleList extends Component {
                             <List.Item.Meta
                                 style={{fontSize: 20}}
                                 title={
-                                    <Typography.Title level={3}>
+                                    <Typography.Paragraph
+                                        style={{fontSize: 20, fontWeight: 700}}>
                                         {item.title}
-                                    </Typography.Title>}
+                                    </Typography.Paragraph>}
                                 description={formatTime(item.createdAt)}/>
                             <Typography.Paragraph
                                 style={{fontSize: 15}}
