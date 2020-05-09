@@ -37,7 +37,7 @@ function Introduction() {
 class RightPage extends Component {
     render() {
         return (
-            <Layout>
+            <Layout style={{marginTop: 10}}>
                 <Introduction/>
                 <GithubEvent/>
             </Layout>

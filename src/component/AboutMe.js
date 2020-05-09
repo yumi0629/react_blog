@@ -51,7 +51,7 @@ class AboutMe extends Component {
             <Layout style={{padding: 30, backgroundColor: "white", borderRadius: 8}}>
                 <HttpContainer
                     isLoading={loading}
-                    hasError={error != null}
+                    error={error}
                     component={components}/>
             </Layout>
         );

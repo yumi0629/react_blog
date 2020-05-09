@@ -1,12 +1,22 @@
-import {FETCH_LIST_BEGIN, FETCH_LIST_SUCCESS, FETCH_LIST_FAILURE} from "../action/articleAction";
+import {
+    FETCH_LIST_BEGIN,
+    FETCH_LIST_SUCCESS,
+    FETCH_LIST_FAILURE,
+    FETCH_DETAIL_BEGIN,
+    FETCH_DETAIL_SUCCESS,
+    FETCH_DETAIL_FAILURE,
+} from "../action/articleAction";
 
 const initialState = {
     articles: [],
     loading: false,
-    error: null
+    error: null,
+    detail: {
+        content: "",
+    },
 };
 
-export default function articleListReducer(state = initialState, action) {
+export default function articleReducer(state = initialState, action) {
     switch (action.type) {
         case FETCH_LIST_BEGIN:
             return {
@@ -26,6 +36,29 @@ export default function articleListReducer(state = initialState, action) {
             return {
                 ...state,
                 articles: [],
+                loading: false,
+                error: action.payload.error,
+            };
+        case FETCH_DETAIL_BEGIN:
+            return {
+                ...state,
+                detail: {
+                    content: "",
+                },
+                loading: true,
+                error: null,
+            };
+        case FETCH_DETAIL_SUCCESS:
+            return {
+                ...state,
+                detail: action.payload.detail,
+                loading: false,
+                error: null,
+            };
+        case FETCH_DETAIL_FAILURE:
+            return {
+                ...state,
+                detail: null,
                 loading: false,
                 error: action.payload.error,
             };

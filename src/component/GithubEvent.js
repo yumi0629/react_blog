@@ -17,7 +17,7 @@ function Title() {
         <Typography.Text
             style={{
                 fontSize: 22, color: '#ff4081', fontWeight: "700",
-                marginTop: 40, marginLeft: 20, marginRight: 16
+                marginTop: 40, marginLeft: 10, marginRight: 16
             }}>
             Github Events
         </Typography.Text>
@@ -29,7 +29,7 @@ function Empty() {
         <Typography.Text
             style={{
                 fontSize: 17, color: '#ff4081', fontWeight: "700",
-                marginTop: 20, marginLeft: 20, marginRight: 16, marginBottom: 20,
+                marginTop: 20, marginLeft: 10, marginRight: 16, marginBottom: 20,
             }}>
             没有任何Github活动数据哦~
         </Typography.Text>
@@ -41,11 +41,11 @@ function Top(props) {
         return (
             <Typography.Text
                 style={{
-                    fontSize: 17,
+                    fontSize: 18,
                     color: '#ff4081',
                     fontWeight: "500",
                     marginTop: 20,
-                    marginLeft: 20,
+                    marginLeft: 10,
                     marginRight: 16,
                     marginBottom: 30,
                 }}>
@@ -67,11 +67,11 @@ function getTodayCommits(events) {
 function getEventDetail(event) {
     switch (event.type) {
         case 'CreateEvent':
-            return event.repo.name;
+            return event.payload.description;
         case 'WatchEvent':
             return event.repo.name;
         case 'PushEvent':
-            return event.repo.name;
+            return event.payload.commits[0].message;
         case 'IssuesEvent':
             return event.payload.issue['title'];
         case 'IssueCommentEvent':
@@ -83,15 +83,14 @@ function getEventDetail(event) {
     }
 }
 
-
 function getEventString(event) {
     switch (event.type) {
         case 'CreateEvent':
-            return 'Create a repository';
+            return 'Create a repository ' + event.repo.name;
         case 'WatchEvent':
             return event.payload.action;
         case 'PushEvent':
-            return 'Commit to repository';
+            return 'Commit to repository ' + event.repo.name;
         case 'IssuesEvent':
             return 'Create a issue on ' + event.repo.name;
         case 'IssueCommentEvent':
@@ -130,34 +129,47 @@ class GithubEvent extends Component {
 
     render() {
         const {events} = this.props;
+        let hasEvents = events != null && events.length !== 0;
         return (
-            <Layout style={{backgroundColor: "white", margin: 20, borderRadius: 8}}>
+            <Layout style={{backgroundColor: "white", margin: 20, borderRadius: 8, paddingLeft: 30, paddingRight: 20}}>
                 <Title/>
                 <Top
-                    hasEvents={events != null && events.length !== 0}
+                    hasEvents={hasEvents}
                     eventToday={getTodayCommits(events)}/>
-                <Timeline mode="left" style={{marginRight: 16}}>
-                    {
-                        events.map(
-                            (item) => {
-                                return <Timeline.Item
-                                    key={item.id}
-                                    label={formatTime(item.created_at)}
-                                    dot={getIcon(item.type)}>
-                                    <Typography.Text
-                                        style={{fontSize: 16, color: "#303030"}}>
-                                        {getEventString(item)}
-                                    </Typography.Text>
-                                    <Typography.Paragraph
-                                        style={{fontSize: 15}}
-                                        ellipsis={{rows: 2}}>
-                                        {getEventDetail(item)}
-                                    </Typography.Paragraph>
-                                </Timeline.Item>
+                {
+                    hasEvents
+                        ? <Timeline style={{marginRight: 16}}>
+                            {
+                                events.map(
+                                    (item) => {
+                                        let detail = getEventDetail(item);
+                                        return <Timeline.Item
+                                            key={item.id}
+                                            dot={getIcon(item.type)}>
+                                            <Typography.Paragraph
+                                                style={{fontSize: 16, color: "#303030"}}>
+                                                {getEventString(item)}
+                                            </Typography.Paragraph>
+                                            {
+                                                detail == null || detail === ""
+                                                    ? null
+                                                    : <Typography.Paragraph
+                                                        style={{fontSize: 15}}
+                                                        ellipsis={{rows: 2}}>
+                                                        {detail}
+                                                    </Typography.Paragraph>
+                                            }
+                                            <Typography.Paragraph
+                                                style={{fontSize: 14, color: "#BDBDBD"}}>
+                                                {formatTime(item.created_at)}
+                                            </Typography.Paragraph>
+                                        </Timeline.Item>
+                                    }
+                                )
                             }
-                        )
-                    }
-                </Timeline>
+                        </Timeline>
+                        : null
+                }
             </Layout>
         );
     }

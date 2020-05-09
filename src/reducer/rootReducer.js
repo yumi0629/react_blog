@@ -1,11 +1,11 @@
 import {combineReducers} from "redux";
-import articleListReducer from "./articleReducer";
+import articleReducer from "./articleReducer";
 import aboutReducer from "./aboutReducer";
 import githubReducer from "./githubReducer";
 
 
 export default combineReducers({
-    articleListReducer,
+    articleReducer,
     aboutReducer,
     githubReducer,
 });

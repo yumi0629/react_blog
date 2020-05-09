@@ -1,20 +1,52 @@
-import {githubToken, getGithubEvents as eventsUrl} from "../network/Api";
+import {
+    githubToken,
+    getGithubEvents as eventsUrl,
+    accessTokenUrl,
+    getGithubUserInfo,
+} from "../network/Api";
 
 export const FETCH_EVENTS_BEGIN = 'FETCH_EVENTS_BEGIN';
 export const FETCH_EVENTS_SUCCESS = 'FETCH_EVENTS_SUCCESS';
 export const FETCH_EVENTS_FAILURE = 'FETCH_EVENTS_FAILURE';
-
 const fetchEventsBegin = () => ({
     type: FETCH_EVENTS_BEGIN
 });
-
 const fetchEventsSuccess = events => ({
     type: FETCH_EVENTS_SUCCESS,
     payload: {events}
 });
-
 const fetchEventsFailure = error => ({
     type: FETCH_EVENTS_FAILURE,
+    payload: {error}
+});
+
+export const FETCH_TOKEN_BEGIN = 'FETCH_TOKEN_BEGIN';
+export const FETCH_TOKEN_SUCCESS = 'FETCH_TOKEN_SUCCESS';
+export const FETCH_TOKEN_FAILURE = 'FETCH_TOKEN_FAILURE';
+const fetchTokenBegin = () => ({
+    type: FETCH_TOKEN_BEGIN
+});
+const fetchTokenSuccess = token => ({
+    type: FETCH_TOKEN_SUCCESS,
+    payload: {token}
+});
+const fetchTokenFailure = error => ({
+    type: FETCH_TOKEN_FAILURE,
+    payload: {error}
+});
+
+export const FETCH_USER_BEGIN = 'FETCH_USER_BEGIN';
+export const FETCH_USER_SUCCESS = 'FETCH_USER_SUCCESS';
+export const FETCH_USER_FAILURE = 'FETCH_USER_FAILURE';
+const fetchUserBegin = () => ({
+    type: FETCH_USER_BEGIN
+});
+const fetchUserSuccess = user => ({
+    type: FETCH_USER_SUCCESS,
+    payload: {user}
+});
+const fetchUserFailure = error => ({
+    type: FETCH_USER_FAILURE,
     payload: {error}
 });
 
@@ -24,6 +56,42 @@ function handleErrors(response) {
         throw Error(response.statusText);
     }
     return response;
+}
+
+export function getUserInfo() {
+    return dispatch => {
+        dispatch(fetchUserBegin());
+        fetch(getGithubUserInfo + '?access_token=' + localStorage.getItem('access_token'), {
+            method: 'GET',
+        })
+            .then(handleErrors)
+            .then(res => res.json())
+            .then(json => {
+                dispatch(fetchUserSuccess(json));
+                return json;
+            })
+            .catch(error => dispatch(fetchUserFailure(error)));
+    }
+}
+
+export function getUserToken(code) {
+    return dispatch => {
+        dispatch(fetchTokenBegin());
+        fetch(accessTokenUrl, {
+            method: 'POST',
+            body: JSON.stringify({code: code})
+        })
+            .then(handleErrors)
+            .then(res => res.json())
+            .then(json => {
+                let token = json['access_token'];
+                console.log(`http token = ` + token);
+                localStorage.setItem("access_token", token);
+                dispatch(fetchTokenSuccess(token));
+                return token;
+            })
+            .catch(error => dispatch(fetchTokenFailure(error)));
+    }
 }
 
 export function getGithubEvents() {
@@ -39,7 +107,6 @@ export function getGithubEvents() {
             .then(res => res.json())
             .then(json => {
                 dispatch(fetchEventsSuccess(json));
-                console.log(`json = `+json)
                 return json;
             })
             .catch(error => dispatch(fetchEventsFailure(error)));
