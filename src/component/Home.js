@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Layout, Menu, Row, Col} from "antd";
+import {Layout, Menu, Row, Col, BackTop} from "antd";
 import '../styles/ant-theme.less';
 import RightPage from "./RightPage";
 import ArticleList from "./ArticleList";
@@ -80,6 +80,7 @@ class Home extends Component {
                         <RightPage/>
                     </Sider>
                 </Layout>
+                <BackTop/>
             </Layout>
         );
     }

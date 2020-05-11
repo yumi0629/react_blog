@@ -6,10 +6,9 @@ import {detail} from "../action/articleAction";
 import ReactMarkdown from 'react-markdown';
 import CodeBlock from "./CodeBlock";
 import {formatTime} from "../util/dateHelper";
+import Comment from './Comment';
 
 class ArticleDetail extends Component {
-
-    title = this.props.location.state.title;
 
     componentDidMount() {
         let postId = this.props.match.params.postId;
@@ -19,7 +18,7 @@ class ArticleDetail extends Component {
     render() {
         const {detail, loading, error} = this.props;
         return (
-            <Layout style={{padding: 30, backgroundColor: "white", borderRadius: 8}}>
+            <div style={{padding: 30, backgroundColor: "white", borderRadius: 8}}>
                 <HttpContainer
                     isLoading={loading}
                     error={error}
@@ -33,7 +32,7 @@ class ArticleDetail extends Component {
                                     marginRight: 16,
                                     marginBottom: 30,
                                 }}>
-                                {this.title}
+                                {this.props.location.state.title}
                             </Typography.Title>
                             <Typography.Paragraph
                                 style={{
@@ -54,7 +53,9 @@ class ArticleDetail extends Component {
                             />
                         </div>
                     }/>
-            </Layout>
+                <div style={{height: 30}}/>
+                <Comment type={0} postId={this.props.match.params.postId}/>
+            </div>
         );
     }
 }

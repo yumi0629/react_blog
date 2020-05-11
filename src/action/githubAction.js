@@ -61,14 +61,16 @@ function handleErrors(response) {
 export function getUserInfo() {
     return dispatch => {
         dispatch(fetchUserBegin());
-        fetch(getGithubUserInfo + '?access_token=' + localStorage.getItem('access_token'), {
+        fetch(getGithubUserInfo, {
             method: 'GET',
         })
             .then(handleErrors)
             .then(res => res.json())
             .then(json => {
-                dispatch(fetchUserSuccess(json));
-                return json;
+                let user = json['d'];
+                sessionStorage.setItem("user", JSON.stringify(user));
+                dispatch(fetchUserSuccess(user));
+                return user;
             })
             .catch(error => dispatch(fetchUserFailure(error)));
     }
@@ -85,7 +87,6 @@ export function getUserToken(code) {
             .then(res => res.json())
             .then(json => {
                 let token = json['access_token'];
-                console.log(`http token = ` + token);
                 localStorage.setItem("access_token", token);
                 dispatch(fetchTokenSuccess(token));
                 return token;

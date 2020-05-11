@@ -65,22 +65,16 @@ export default function githubReducer(state = initialState, action) {
             return {
                 ...state,
                 user: null,
-                loading: true,
-                error: null,
             };
         case FETCH_USER_SUCCESS:
             return {
                 ...state,
                 user: action.payload.user,
-                loading: false,
-                error: null,
             };
         case FETCH_USER_FAILURE:
             return {
                 ...state,
                 user: null,
-                loading: false,
-                error: action.payload.error,
             };
         default:
             return state;
