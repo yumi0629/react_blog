@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import {HttpContainer} from '../util/widgets'
-import {Layout, Typography} from "antd";
+import {Typography} from "antd";
 import {detail} from "../action/articleAction";
 import ReactMarkdown from 'react-markdown';
 import CodeBlock from "./CodeBlock";

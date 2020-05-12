@@ -1,4 +1,5 @@
 import {articleList, articleDetail} from '../network/Api';
+import {handleErrors, handleDefault} from "./baseAction";
 
 export const FETCH_LIST_BEGIN = 'FETCH_LIST_BEGIN';
 export const FETCH_LIST_SUCCESS = 'FETCH_LIST_SUCCESS';
@@ -36,14 +37,6 @@ const fetchDetailFailure = error => ({
     payload: {error}
 });
 
-// Handle HTTP errors since fetch won't.
-function handleErrors(response) {
-    if (!response.ok) {
-        throw Error(response.statusText);
-    }
-    return response;
-}
-
 export function list() {
     return dispatch => {
         dispatch(fetchListBegin());
@@ -53,8 +46,11 @@ export function list() {
             .then(handleErrors)
             .then(res => res.json())
             .then(json => {
-                dispatch(fetchListSuccess(json['d']['entrylist']));
-                return json['d']['entrylist'];
+                handleDefault(json, (data) => {
+                    dispatch(fetchListSuccess(data['entrylist']));
+                }, (error) => {
+                    dispatch(fetchListFailure(error));
+                });
             })
             .catch(error => dispatch(fetchListFailure(error)))
     };
@@ -69,8 +65,11 @@ export function detail(postId) {
             .then(handleErrors)
             .then(res => res.json())
             .then(json => {
-                dispatch(fetchDetailSuccess(json['d']));
-                return json['d'];
+                handleDefault(json, (data) => {
+                    dispatch(fetchDetailSuccess(data));
+                }, (error) => {
+                    dispatch(fetchDetailFailure(error));
+                });
             })
             .catch(error => dispatch(fetchDetailFailure(error)))
     };

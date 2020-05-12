@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {Button, Col, Input, Tag, List, Row, Typography} from "antd";
 import {connect} from "react-redux";
 import PropTypes from 'prop-types';
-import {list, showReplyHint, hideReplyHint} from "../action/commentAction";
+import {list, showReplyHint, hideReplyHint, contentOnChange, addComment} from "../action/commentAction";
 import {EditFilled} from "@ant-design/icons";
 
 const {TextArea} = Input;
@@ -16,7 +16,7 @@ class Comment extends Component {
     }
 
     render() {
-        const {user, comments, enable, reply} = this.props;
+        const {user, comments, enable, reply, content} = this.props;
         return (
             <div>
                 <Row align="middle">
@@ -56,7 +56,7 @@ class Comment extends Component {
                                                 display: item.reply_id === -1 ? "none" : "visible",
                                             }}>{`@${item.reply_user_name}：`}</span>
 
-                                            <span style={{fontSize: 14}}> {item.comment} </span>
+                                            <span style={{fontSize: 14, whiteSpace: "pre-line"}}> {item.comment} </span>
                                         </Col>
 
                                     </Row>
@@ -108,7 +108,11 @@ class Comment extends Component {
                             allowClear={true}
                             placeholder={enable ? '请输入评论' : '请先登录哦~'}
                             disabled={!enable}
-                            maxLength={300}>
+                            maxLength={300}
+                            value={content}
+                            onChange={(event) => {
+                                this.props.dispatch(contentOnChange(event.target.value));
+                            }}>
                         </TextArea>
                         <Button
                             type="primary"
@@ -116,7 +120,20 @@ class Comment extends Component {
                             disabled={!enable}
                             style={{fontWeight: "500", marginTop: 110}}
                             onClick={() => {
-
+                                let user = JSON.parse(sessionStorage.getItem('user'));
+                                this.props.dispatch(addComment(
+                                    this.props.type,
+                                    {
+                                        comment: content,
+                                        article_id: this.props.postId,
+                                        user_id: user.id.toString(),
+                                        user_name: user.name,
+                                        user_avatar: user.avatar_url,
+                                        reply_id: reply == null ? -1 : reply.replyId,
+                                        reply_user_id: reply == null ? "" : reply.replyUserId,
+                                        reply_user_name: reply == null ? "" : reply.replyUserName,
+                                    }
+                                ));
                             }}>
                             发表评论
                         </Button>
@@ -137,6 +154,7 @@ const mapStateToProps = state => ({
     comments: state.commentReducer.comments,
     enable: state.commentReducer.enable,
     reply: state.commentReducer.reply,
+    content: state.commentReducer.content,
 });
 
 export default connect(mapStateToProps)(Comment);

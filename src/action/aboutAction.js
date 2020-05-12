@@ -1,4 +1,5 @@
 import {aboutMe} from '../network/Api';
+import {handleErrors, handleDefault} from "./baseAction";
 
 export const FETCH_ABOUT_BEGIN = 'FETCH_ABOUT_BEGIN';
 export const FETCH_ABOUT_SUCCESS = 'FETCH_ABOUT_SUCCESS';
@@ -18,25 +19,20 @@ const fetchAboutFailure = error => ({
     payload: {error}
 });
 
-// Handle HTTP errors since fetch won't.
-function handleErrors(response) {
-    if (!response.ok) {
-        throw Error(response.statusText);
-    }
-    return response;
-}
-
 export function getAbout() {
     return dispatch => {
         dispatch(fetchAboutBegin());
-        return fetch(aboutMe+`?type=react`, {
+        return fetch(aboutMe + `?type=react`, {
             method: 'GET'
         })
             .then(handleErrors)
             .then(res => res.json())
             .then(json => {
-                dispatch(fetchAboutSuccess(json['d']));
-                return json['d'];
+                handleDefault(json, (data) => {
+                    dispatch(fetchAboutSuccess(data));
+                }, (error) => {
+                    dispatch(fetchAboutFailure(error))
+                })
             })
             .catch(error => dispatch(fetchAboutFailure(error)));
     }

@@ -9,8 +9,13 @@ import thunk from "redux-thunk";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {initialRoute, githubLoginSuccess} from "./route/routeName";
 import GithubLoginSuccess from "./component/GithubLoginSuccess";
+import {message} from "antd";
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
+
+message.config({
+    top: "50%",
+});
 
 function App() {
     return (

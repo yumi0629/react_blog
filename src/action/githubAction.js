@@ -4,6 +4,7 @@ import {
     accessTokenUrl,
     getGithubUserInfo,
 } from "../network/Api";
+import {handleErrors, handleDefault} from "./baseAction";
 
 export const FETCH_EVENTS_BEGIN = 'FETCH_EVENTS_BEGIN';
 export const FETCH_EVENTS_SUCCESS = 'FETCH_EVENTS_SUCCESS';
@@ -50,14 +51,6 @@ const fetchUserFailure = error => ({
     payload: {error}
 });
 
-// Handle HTTP errors since fetch won't.
-function handleErrors(response) {
-    if (!response.ok) {
-        throw Error(response.statusText);
-    }
-    return response;
-}
-
 export function getUserInfo() {
     return dispatch => {
         dispatch(fetchUserBegin());
@@ -67,10 +60,12 @@ export function getUserInfo() {
             .then(handleErrors)
             .then(res => res.json())
             .then(json => {
-                let user = json['d'];
-                sessionStorage.setItem("user", JSON.stringify(user));
-                dispatch(fetchUserSuccess(user));
-                return user;
+                handleDefault(json, (user) => {
+                    sessionStorage.setItem("user", JSON.stringify(user));
+                    console.log(`set user = ${JSON.stringify(user)}`);
+
+                    dispatch(fetchUserSuccess(user));
+                }, error => dispatch(fetchUserFailure(error)));
             })
             .catch(error => dispatch(fetchUserFailure(error)));
     }
@@ -86,10 +81,13 @@ export function getUserToken(code) {
             .then(handleErrors)
             .then(res => res.json())
             .then(json => {
-                let token = json['access_token'];
-                localStorage.setItem("access_token", token);
-                dispatch(fetchTokenSuccess(token));
-                return token;
+                if (json.hasOwnProperty('access_token')) {
+                    let token = json['access_token'];
+                    localStorage.setItem("access_token", token);
+                    dispatch(fetchTokenSuccess(token));
+                } else {
+                    dispatch(fetchTokenFailure(Error('系统异常')));
+                }
             })
             .catch(error => dispatch(fetchTokenFailure(error)));
     }
@@ -108,7 +106,6 @@ export function getGithubEvents() {
             .then(res => res.json())
             .then(json => {
                 dispatch(fetchEventsSuccess(json));
-                return json;
             })
             .catch(error => dispatch(fetchEventsFailure(error)));
     }
