@@ -62,8 +62,6 @@ export function getUserInfo() {
             .then(json => {
                 handleDefault(json, (user) => {
                     sessionStorage.setItem("user", JSON.stringify(user));
-                    console.log(`set user = ${JSON.stringify(user)}`);
-
                     dispatch(fetchUserSuccess(user));
                 }, error => dispatch(fetchUserFailure(error)));
             })

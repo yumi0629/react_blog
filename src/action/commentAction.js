@@ -73,15 +73,6 @@ export function list(type, postId) {
 }
 
 export function addComment(type, comment) {
-    console.log(`comment =
-     ${comment.comment} 
-    , ${comment.article_id}
-    , ${comment.user_id}
-    , ${comment.user_name}
-    , ${comment.user_avatar}
-    , ${comment.reply_id}
-    , ${comment.reply_user_id}
-    , ${comment.reply_user_name}`);
     return dispatch => {
         dispatch(addCommentBegin());
         let formData = new FormData();

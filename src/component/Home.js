@@ -3,10 +3,12 @@ import {Layout, Menu, Row, Col, BackTop} from "antd";
 import '../styles/ant-theme.less';
 import RightPage from "./RightPage";
 import ArticleList from "./ArticleList";
+import LifeList from "./LifeList";
 import AboutMe from "./AboutMe";
 import ArticleDetail from "./ArticleDetail";
+import LifeDetail from "./lifeDetail";
 import {Route, Switch, Redirect, Link} from "react-router-dom";
-import {articleList, initialRoute, aboutMe, articleDetail} from '../route/routeName';
+import {articleList, initialRoute, aboutMe, articleDetail, lifeList, lifeDetail} from '../route/routeName';
 import LogOut from "./LogOut";
 import SignIn from "./SignIn";
 
@@ -21,7 +23,7 @@ function TabMenu() {
         },
         {
             title: '生活',
-            route: '/',
+            route: lifeList,
         },
         {
             title: '关于我',
@@ -70,8 +72,10 @@ class Home extends Component {
                 <Layout>
                     <Content style={{margin: 30, height: '100%'}}>
                         <Route path={articleList} component={ArticleList}/>
+                        <Route path={lifeList} component={LifeList}/>
                         <Route path={aboutMe} component={AboutMe}/>
                         <Route path={articleDetail + '/:postId'} component={ArticleDetail}/>
+                        <Route path={lifeDetail + '/:postId'} component={LifeDetail}/>
                         <Switch>
                             <Redirect from={initialRoute} to={articleList}/>
                         </Switch>

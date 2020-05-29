@@ -126,6 +126,7 @@ class Comment extends Component {
                                     {
                                         comment: content,
                                         article_id: this.props.postId,
+                                        post_id: this.props.postId,
                                         user_id: user.id.toString(),
                                         user_name: user.name,
                                         user_avatar: user.avatar_url,
